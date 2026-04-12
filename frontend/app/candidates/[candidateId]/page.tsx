@@ -60,6 +60,11 @@ export default function CandidatePage() {
   const [question, setQuestion] = useState("");
   const [chatAnswer, setChatAnswer] = useState("");
   const [chatLoading, setChatLoading] = useState(false);
+  const [linkedinExpanded, setLinkedinExpanded] = useState(false);
+  const [tweetsExpanded, setTweetsExpanded] = useState(false);
+  const [commitsExpanded, setCommitsExpanded] = useState(false);
+
+  const isRealCandidate = REAL_CANDIDATE_IDS.includes(candidate.id);
 
   useEffect(() => {
     if (!candidateId) return;
@@ -73,7 +78,30 @@ export default function CandidatePage() {
       .finally(() => setGithubLoading(false));
   }, [candidateId]);
 
-  const isRealCandidate = REAL_CANDIDATE_IDS.includes(candidate.id);
+  // Feed LinkedIn posts and tweets into Supermemory on page load for real candidates
+  useEffect(() => {
+    if (!isRealCandidate) return;
+    if (!candidate.linkedinPosts?.length && !candidate.tweets?.length) return;
+
+    const feedToSupermemory = async () => {
+      for (const post of candidate.linkedinPosts ?? []) {
+        await fetch(`${API}/candidates/${candidate.id}/feed`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ linkedin_post: post.content }),
+        }).catch(() => {});
+      }
+      for (const tweet of candidate.tweets ?? []) {
+        await fetch(`${API}/candidates/${candidate.id}/feed`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ tweet: tweet.content }),
+        }).catch(() => {});
+      }
+    };
+
+    feedToSupermemory();
+  }, [candidate.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChat = async () => {
     if (!question.trim() || !isRealCandidate) return;
@@ -98,15 +126,25 @@ export default function CandidatePage() {
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(`Subject: ${draft.subject}
-
-${draft.body}`);
+      await navigator.clipboard.writeText(`Subject: ${draft.subject}\n\n${draft.body}`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch {
       alert("Copy failed. You can still select and copy the text manually.");
     }
   };
+
+  const visibleLinkedinPosts = linkedinExpanded
+    ? (candidate.linkedinPosts ?? [])
+    : (candidate.linkedinPosts ?? []).slice(0, 1);
+
+  const visibleTweets = tweetsExpanded
+    ? (candidate.tweets ?? [])
+    : (candidate.tweets ?? []).slice(0, 1);
+
+  const visibleCommits = commitsExpanded
+    ? (candidate.githubCommits ?? [])
+    : (candidate.githubCommits ?? []).slice(0, 5);
 
   return (
     <main className="min-h-screen bg-orange-50 p-6 md:p-8">
@@ -225,6 +263,8 @@ ${draft.body}`);
         </header>
 
         <section className="mt-6 grid gap-6">
+
+          {/* LinkedIn */}
           <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-2xl font-bold text-slate-950">LinkedIn</h2>
@@ -233,17 +273,46 @@ ${draft.body}`);
                   href={candidate.linkedinUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-sm font-medium text-blue-700 hover:underline"
+                  className="text-sm font-medium text-orange-700 hover:underline"
                 >
                   View profile ↗
                 </a>
               )}
             </div>
-            <p className="mt-2 text-sm leading-6 text-slate-700">
-              {candidate.linkedinUpdate}
-            </p>
+
+            {visibleLinkedinPosts.length > 0 ? (
+              <div className="mt-3 space-y-4">
+                {visibleLinkedinPosts.map((post, i) => (
+                  <div key={i} className="rounded-2xl bg-gray-50 p-4">
+                    <p className="mb-2 text-xs text-slate-400">{post.date}</p>
+                    <p className="text-sm leading-6 text-slate-700">{post.content}</p>
+                  </div>
+                ))}
+                {!linkedinExpanded && (candidate.linkedinPosts?.length ?? 0) > 1 && (
+                  <button
+                    onClick={() => setLinkedinExpanded(true)}
+                    className="text-sm text-orange-700 hover:underline"
+                  >
+                    Read more posts ({(candidate.linkedinPosts?.length ?? 1) - 1} more) →
+                  </button>
+                )}
+                {linkedinExpanded && (
+                  <button
+                    onClick={() => setLinkedinExpanded(false)}
+                    className="text-sm text-slate-500 hover:underline"
+                  >
+                    Show less
+                  </button>
+                )}
+              </div>
+            ) : (
+              <p className="mt-2 text-sm leading-6 text-slate-700">
+                {candidate.linkedinUpdate}
+              </p>
+            )}
           </div>
 
+          {/* GitHub */}
           <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-2xl font-bold text-slate-950">GitHub</h2>
@@ -275,6 +344,46 @@ ${draft.body}`);
             )}
           </div>
 
+          {/* GitHub Commits — real candidates only */}
+          {isRealCandidate && (candidate.githubCommits?.length ?? 0) > 0 && (
+            <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
+              <h2 className="text-2xl font-bold text-slate-950">GitHub Commits</h2>
+              <div className="mt-3 space-y-3">
+                {visibleCommits.map((commit, i) => (
+                  <div
+                    key={i}
+                    className="rounded-2xl border-l-4 border-orange-300 bg-gray-50 py-3 pl-4 pr-4"
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="rounded-full bg-orange-100 px-2 py-0.5 font-mono text-xs font-medium text-orange-700">
+                        {commit.repo}
+                      </span>
+                      <span className="text-xs text-slate-400">{commit.date}</span>
+                    </div>
+                    <p className="mt-1.5 font-mono text-sm text-slate-800">{commit.message}</p>
+                  </div>
+                ))}
+              </div>
+              {!commitsExpanded && (candidate.githubCommits?.length ?? 0) > 5 && (
+                <button
+                  onClick={() => setCommitsExpanded(true)}
+                  className="mt-3 text-sm text-orange-700 hover:underline"
+                >
+                  See all {candidate.githubCommits?.length} commits →
+                </button>
+              )}
+              {commitsExpanded && (
+                <button
+                  onClick={() => setCommitsExpanded(false)}
+                  className="mt-3 text-sm text-slate-500 hover:underline"
+                >
+                  Show less
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Twitter / X */}
           <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-2xl font-bold text-slate-950">Twitter / X</h2>
@@ -289,11 +398,40 @@ ${draft.body}`);
                 </a>
               )}
             </div>
-            <p className="mt-2 text-sm leading-6 text-slate-700">
-              {candidate.twitterUpdate}
-            </p>
+
+            {visibleTweets.length > 0 ? (
+              <div className="mt-3 space-y-3">
+                {visibleTweets.map((tweet, i) => (
+                  <div key={i} className="rounded-2xl bg-gray-50 p-4">
+                    <p className="text-sm leading-6 text-slate-800">{tweet.content}</p>
+                    <p className="mt-1 text-xs text-slate-400">{tweet.date}</p>
+                  </div>
+                ))}
+                {!tweetsExpanded && (candidate.tweets?.length ?? 0) > 1 && (
+                  <button
+                    onClick={() => setTweetsExpanded(true)}
+                    className="text-sm text-orange-700 hover:underline"
+                  >
+                    See more tweets ({(candidate.tweets?.length ?? 1) - 1} more) →
+                  </button>
+                )}
+                {tweetsExpanded && (
+                  <button
+                    onClick={() => setTweetsExpanded(false)}
+                    className="text-sm text-slate-500 hover:underline"
+                  >
+                    Show less
+                  </button>
+                )}
+              </div>
+            ) : (
+              <p className="mt-2 text-sm leading-6 text-slate-700">
+                {candidate.twitterUpdate}
+              </p>
+            )}
           </div>
 
+          {/* Chat with Supermemory — real candidates only */}
           {isRealCandidate && (
             <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
               <h2 className="text-2xl font-bold text-slate-950">Ask about this candidate</h2>
@@ -307,7 +445,7 @@ ${draft.body}`);
                   onChange={(e) => setQuestion(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleChat()}
                   placeholder="e.g. What projects has this candidate built?"
-                  className="flex-1 rounded-xl border border-orange-200 bg-white/80 px-4 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                  className="flex-1 rounded-xl border border-orange-200 bg-white px-4 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-300"
                 />
                 <button
                   onClick={handleChat}
@@ -423,4 +561,3 @@ ${draft.body}`);
     </main>
   );
 }
-
