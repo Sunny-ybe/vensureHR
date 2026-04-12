@@ -104,7 +104,7 @@ class SupermemoryService:
         client = self._ensure_client()
         kwargs: dict[str, Any] = {
             "content": content,
-            "container_tag": space_id,
+            "container_tags": [space_id],
         }
         if metadata:
             kwargs["metadata"] = metadata
@@ -144,7 +144,7 @@ class SupermemoryService:
         try:
             resp = await client.search.execute(
                 q=query,
-                container_tag=space_id,
+                container_tags=[space_id],
                 limit=limit,
                 rerank=rerank,
             )

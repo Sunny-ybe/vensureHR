@@ -23,16 +23,21 @@ class CandidateMatch(BaseModel):
 @router.post("", response_model=list[CandidateMatch])
 async def query(payload: QueryRequest):
     async with SupermemoryService() as svc:
-        memories = await svc.query_space(
-            space_id="candidate:",  # searches across all candidate containers
-            query=payload.q,
-            limit=10
-        )
+        client = svc._ensure_client()
+        # No container_tags = search across all candidates' memories
+        resp = await client.search.execute(q=payload.q, limit=10)
+        memories = [r.model_dump() for r in (resp.results or [])]
+
+    def _chunk_text(m: dict) -> str:
+        chunks = m.get("chunks") or []
+        if chunks and chunks[0].get("content"):
+            return chunks[0]["content"]
+        return (m.get("content") or "")
 
     context = "\n\n".join(
         f"ID: {m.get('metadata', {}).get('candidate_id', 'unknown')}\n"
         f"Name: {m.get('metadata', {}).get('name', 'unknown')}\n"
-        f"Content: {m.get('chunk', '') or m.get('content', '')}"
+        f"Content: {_chunk_text(m)}"
         for m in memories
     )
 

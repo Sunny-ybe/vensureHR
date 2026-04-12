@@ -11,7 +11,12 @@
       "Bash(python3 -c \"import supermemory; help\\(supermemory\\)\")",
       "Bash(python3 -c ':*)",
       "Read(//Users/sashikantkumar/Desktop/**)",
-      "Read(//Users/sashikantkumar/**)"
+      "Read(//Users/sashikantkumar/**)",
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(echo \"vensurehr PID: $!\")",
+      "Bash(echo \"candidate PID: $!\")",
+      "Read(//private/tmp/**)"
     ]
   }
 }
