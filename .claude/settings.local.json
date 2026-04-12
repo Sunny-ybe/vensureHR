@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.supermemory.ai)",
+      "WebFetch(domain:supermemory.ai)",
+      "WebFetch(domain:api.supermemory.ai)",
+      "WebSearch",
+      "WebFetch(domain:github.com)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(python3 -c \"import supermemory; help\\(supermemory\\)\")",
+      "Bash(python3 -c ':*)",
+      "Read(//Users/sashikantkumar/Desktop/**)",
+      "Read(//Users/sashikantkumar/**)"
+    ]
+  }
+}
