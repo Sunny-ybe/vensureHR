@@ -127,23 +127,43 @@ ${draft.body}`);
             </div>
           </div>
 
-          {candidate.githubUrl && (
-            <div className="mt-5 flex flex-wrap gap-3">
+          <div className="mt-5 flex flex-wrap gap-3">
+            {candidate.linkedinUrl && (
+              <a
+                href={candidate.linkedinUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-xl bg-blue-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800"
+              >
+                LinkedIn ↗
+              </a>
+            )}
+            {candidate.githubUrl && (
               <a
                 href={candidate.githubUrl}
                 target="_blank"
                 rel="noreferrer"
                 className="rounded-xl bg-slate-950 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
               >
-                Open GitHub profile
+                GitHub ↗
               </a>
-              {candidate.githubUsername && (
-                <span className="rounded-xl border border-orange-200 bg-white/70 px-4 py-2 text-sm text-slate-700">
-                  @{candidate.githubUsername}
-                </span>
-              )}
-            </div>
-          )}
+            )}
+            {candidate.twitterUrl && (
+              <a
+                href={candidate.twitterUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-xl bg-black px-4 py-2 text-sm font-medium text-white transition hover:bg-zinc-800"
+              >
+                X / Twitter ↗
+              </a>
+            )}
+            {candidate.githubUsername && (
+              <span className="rounded-xl border border-orange-200 bg-white/70 px-4 py-2 text-sm text-slate-700">
+                @{candidate.githubUsername}
+              </span>
+            )}
+          </div>
 
           <button
             onClick={() => setEmailOpen(true)}
@@ -155,21 +175,69 @@ ${draft.body}`);
 
         <section className="mt-6 grid gap-6">
           <div className="rounded-3xl border border-orange-200 bg-white/50 p-5 shadow-lg backdrop-blur-xl">
-            <h2 className="text-2xl font-bold text-slate-950">LinkedIn</h2>
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-2xl font-bold text-slate-950">LinkedIn</h2>
+              {candidate.linkedinUrl && (
+                <a
+                  href={candidate.linkedinUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-blue-700 hover:underline"
+                >
+                  View profile ↗
+                </a>
+              )}
+            </div>
             <p className="mt-2 text-sm leading-6 text-slate-700">
               {candidate.linkedinUpdate}
             </p>
           </div>
 
           <div className="rounded-3xl border border-orange-200 bg-white/50 p-5 shadow-lg backdrop-blur-xl">
-            <h2 className="text-2xl font-bold text-slate-950">GitHub</h2>
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-2xl font-bold text-slate-950">GitHub</h2>
+              {candidate.githubUrl && (
+                <a
+                  href={candidate.githubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-slate-700 hover:underline"
+                >
+                  View profile ↗
+                </a>
+              )}
+            </div>
             <p className="mt-2 text-sm leading-6 text-slate-700">
               {candidate.githubUpdate}
             </p>
+            {githubLoading && (
+              <p className="mt-2 text-xs text-slate-400">Loading live repos…</p>
+            )}
+            {githubRepos.length > 0 && (
+              <div className="mt-3 space-y-2">
+                {githubRepos.map((repo, i) => (
+                  <div key={i} className="rounded-2xl bg-white/70 px-4 py-3 text-sm text-slate-700">
+                    {repo.content}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="rounded-3xl border border-orange-200 bg-white/50 p-5 shadow-lg backdrop-blur-xl">
-            <h2 className="text-2xl font-bold text-slate-950">Twitter / X</h2>
+            <div className="flex items-center justify-between gap-4">
+              <h2 className="text-2xl font-bold text-slate-950">Twitter / X</h2>
+              {candidate.twitterUrl && (
+                <a
+                  href={candidate.twitterUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-slate-700 hover:underline"
+                >
+                  View profile ↗
+                </a>
+              )}
+            </div>
             <p className="mt-2 text-sm leading-6 text-slate-700">
               {candidate.twitterUpdate}
             </p>

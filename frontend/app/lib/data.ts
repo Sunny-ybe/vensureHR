@@ -30,6 +30,9 @@ export type Candidate = {
   githubUrl?: string;
   githubUsername?: string;
   linkedinUrl?: string;
+  twitterUrl?: string;
+  resumeUrl?: string;
+  willingToRelocate: boolean;
 
   interviewSummary: {
     candidateSaid: string;
@@ -82,10 +85,13 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Shared a dashboard redesign project.",
     githubUpdate: "Added a reusable component library.",
     twitterUpdate: "Talking about design systems.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     interviewSummary: {
       candidateSaid: "Focused on improving frontend performance.",
       companyNotes: "Strong UI + product thinking.",
     },
+    willingToRelocate: true,
     summary: "Strong frontend candidate with product thinking and clean UI execution.",
     reason: "Good fit for modern frontend-heavy software development roles.",
   },
@@ -103,6 +109,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Led a product sprint.",
     githubUpdate: "Refactored backend APIs.",
     twitterUpdate: "Discussing backend reliability.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     interviewSummary: {
       candidateSaid: "Enjoys backend architecture work.",
       companyNotes: "Strong backend engineer.",
@@ -124,6 +132,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Posted about accessibility improvements.",
     githubUpdate: "Added testing coverage.",
     twitterUpdate: "Talking about UX.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     interviewSummary: {
       candidateSaid: "Focused on user experience.",
       companyNotes: "Good product mindset.",
@@ -145,6 +155,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Built a search assistant.",
     githubUpdate: "Added RAG system.",
     twitterUpdate: "Talking about AI reliability.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     interviewSummary: {
       candidateSaid: "Built production AI systems.",
       companyNotes: "Very strong AI candidate.",
@@ -166,6 +178,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Posted about model evaluation.",
     githubUpdate: "Shared ML experiments.",
     twitterUpdate: "Discussing hallucination issues.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     interviewSummary: {
       candidateSaid: "Focused on model evaluation.",
       companyNotes: "Research + practical mix.",
@@ -187,6 +201,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Built internal AI tools.",
     githubUpdate: "Added agent workflows.",
     twitterUpdate: "Talking about AI UX.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     interviewSummary: {
       candidateSaid: "Focuses on workflows.",
       companyNotes: "Strong product + AI.",
@@ -208,6 +224,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Discussed payroll automation.",
     githubUpdate: "N/A",
     twitterUpdate: "Talking about HR tech.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     interviewSummary: {
       candidateSaid: "Focused on compliance.",
       companyNotes: "Reliable operations candidate.",
@@ -229,6 +247,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Closed multiple deals.",
     githubUpdate: "N/A",
     twitterUpdate: "Talking about B2B sales.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     interviewSummary: {
       candidateSaid: "Strong client relationships.",
       companyNotes: "High conversion potential.",
@@ -250,6 +270,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Finished capstone project.",
     githubUpdate: "Built dashboard app.",
     twitterUpdate: "Learning full-stack dev.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     interviewSummary: {
       candidateSaid: "Improved significantly.",
       companyNotes: "Worth re-evaluating.",
@@ -271,6 +293,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Built AI search tool.",
     githubUpdate: "Added ML repo.",
     twitterUpdate: "Discussing AI journey.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     interviewSummary: {
       candidateSaid: "Transitioning into AI.",
       companyNotes: "Strong improvement.",
@@ -292,6 +316,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Posted a new update about a product launch.",
     githubUpdate: "Active on GitHub with recent repo activity.",
     twitterUpdate: "Sharing build notes and project updates.",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     githubUrl: "https://github.com/Sp15och23",
     githubUsername: "Sp15och23",
     interviewSummary: {
@@ -315,7 +341,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Just published a new lecture on backpropagation and neural net training.",
     githubUpdate: "Active commits to micrograd and nanoGPT repositories.",
     twitterUpdate: "Tweeted about the future of AI education and open source models.",
-    linkedinUrl: "https://www.linkedin.com/in/andrej-karpathy-9a650716/",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/karpathy",
     githubUrl: "https://github.com/karpathy",
     interviewSummary: {
       candidateSaid: "I want to work on fundamental AI research that has real world impact.",
@@ -338,7 +365,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Shared thoughts on modern kernel development practices.",
     githubUpdate: "Recent commits to Linux kernel subsystems.",
     twitterUpdate: "Commented on the state of open source software development.",
-    linkedinUrl: "https://www.linkedin.com/in/linustorvalds/",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     githubUrl: "https://github.com/torvalds",
     interviewSummary: {
       candidateSaid: "Good engineering is about simplicity and getting things right.",
@@ -361,7 +389,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Discussing Python 4.0 and the future of the language.",
     githubUpdate: "Active contributions to CPython and typing improvements.",
     twitterUpdate: "Engaged with the Python community on PEP proposals.",
-    linkedinUrl: "https://www.linkedin.com/in/guido-van-rossum-4a0756/",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/gvanrossum",
     githubUrl: "https://github.com/gvanrossum",
     interviewSummary: {
       candidateSaid: "Readability counts. Code is read more than it is written.",
@@ -384,7 +413,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Published new article on Core Web Vitals optimization.",
     githubUpdate: "New commits to open source performance tooling projects.",
     twitterUpdate: "Shared insights on modern frontend architecture patterns.",
-    linkedinUrl: "https://www.linkedin.com/in/addyosmani/",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/addyosmani",
     githubUrl: "https://github.com/addyosmani",
     interviewSummary: {
       candidateSaid: "Performance is a feature. Every millisecond matters.",
@@ -407,7 +437,8 @@ export const candidates: Candidate[] = [
     linkedinUpdate: "Posted about deploying LLMs at production scale.",
     githubUpdate: "Recent commits to ML pipeline and model serving repositories.",
     twitterUpdate: "Discussing the tradeoffs between fine-tuning and RAG approaches.",
-    linkedinUrl: "https://www.linkedin.com/in/sashikantkumar/",
+    linkedinUrl: "https://www.linkedin.com/in/sashikant-kumar-2004951b4/",
+    twitterUrl: "https://x.com/sashikant877",
     githubUrl: "https://github.com/sunny-ybe",
     interviewSummary: {
       candidateSaid: "The gap between research and production is where I thrive.",
