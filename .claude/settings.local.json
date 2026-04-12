@@ -16,7 +16,9 @@
       "Bash(npm run:*)",
       "Bash(echo \"vensurehr PID: $!\")",
       "Bash(echo \"candidate PID: $!\")",
-      "Read(//private/tmp/**)"
+      "Read(//private/tmp/**)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(echo \"PID: $!\")"
     ]
   }
 }

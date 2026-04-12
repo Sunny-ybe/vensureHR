@@ -133,9 +133,9 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-orange-200 p-6 md:p-8">
+    <main className="min-h-screen bg-orange-50 p-6 md:p-8">
       <div className="mx-auto max-w-7xl">
-        <header className="mb-8 rounded-3xl border border-orange-200 bg-white/60 p-6 shadow-lg backdrop-blur-xl">
+        <header className="mb-8 rounded-3xl border border-orange-200 bg-white p-6 shadow-sm">
           <p className="text-xs uppercase tracking-[0.35em] text-orange-700">
             Venture HR
           </p>
@@ -159,7 +159,7 @@ export default function Home() {
           />
         </section>
 
-        <section className="mb-8 rounded-3xl border border-orange-200 bg-white/60 p-5 shadow-lg backdrop-blur-xl">
+        <section className="mb-8 rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
           <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
             <div className="relative flex-1">
               <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-orange-400">
@@ -197,7 +197,7 @@ export default function Home() {
           </button>
 
           {showAddRole && (
-            <div className="mt-5 rounded-3xl border border-orange-200 bg-white/80 p-5">
+            <div className="mt-5 rounded-3xl border border-orange-200 bg-white p-5">
               <div className="grid gap-4 md:grid-cols-2">
                 <label className="block">
                   <span className="mb-2 block text-xs font-semibold uppercase tracking-[0.25em] text-orange-700">
@@ -333,7 +333,7 @@ export default function Home() {
               {customRoles.map((role) => (
                 <div
                   key={role.id}
-                  className="rounded-3xl border border-orange-200 bg-white/60 p-5 shadow-lg backdrop-blur-xl"
+                  className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm"
                 >
                   <h3 className="text-xl font-bold text-slate-950">{role.title}</h3>
                   <p className="mt-2 text-sm text-slate-600">{role.description}</p>
@@ -367,7 +367,7 @@ function StatCard({
   note: string;
 }) {
   return (
-    <div className="rounded-3xl border border-orange-200 bg-white/60 p-5 shadow-lg backdrop-blur-xl">
+    <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
       <p className="text-xs uppercase tracking-[0.3em] text-orange-700">{label}</p>
       <p className="mt-2 text-4xl font-bold text-slate-950">{value}</p>
       <p className="mt-1 text-sm text-slate-600">{note}</p>
@@ -404,7 +404,7 @@ function CandidateCard({
   candidate: (typeof candidates)[number];
 }) {
   return (
-    <div className="rounded-3xl border border-orange-200 bg-white/65 p-5 shadow-lg backdrop-blur-xl">
+    <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
       <div className="flex items-start justify-between gap-4">
         <div>
           <h3 className="text-xl font-bold text-slate-950">{candidate.name}</h3>
@@ -429,6 +429,13 @@ function CandidateCard({
         <span className="rounded-full bg-orange-50 px-3 py-1 text-xs font-medium text-orange-700">
           {candidate.roleId}
         </span>
+        <span className={`rounded-full px-3 py-1 text-xs font-medium ${
+          candidate.willingToRelocate
+            ? "bg-orange-100 text-orange-700"
+            : "bg-gray-100 text-gray-500"
+        }`}>
+          Relocate: {candidate.willingToRelocate ? "Yes" : "No"}
+        </span>
       </div>
 
       <p className="mt-4 text-sm leading-6 text-slate-700">{candidate.summary}</p>
@@ -437,14 +444,14 @@ function CandidateCard({
         {candidate.skills.map((skill) => (
           <span
             key={skill}
-            className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700"
+            className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600"
           >
             {skill}
           </span>
         ))}
       </div>
 
-      <div className="mt-4 rounded-2xl bg-white/70 p-4">
+      <div className="mt-4 rounded-2xl bg-gray-50 p-4">
         <p className="text-xs uppercase tracking-[0.25em] text-orange-700">
           Interview summary
         </p>

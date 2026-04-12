@@ -7,6 +7,14 @@ import { candidates, roles } from "../../lib/data";
 
 const API = "https://swarm-exemplify-verbalize.ngrok-free.dev";
 
+const REAL_CANDIDATE_IDS = [
+  "83cbc69d-8a56-47e2-8426-8317d1dc87fb",
+  "d897df48-928f-4486-bd71-a08c1e20620e",
+  "52da3164-f14a-4f66-b3c0-97eb78b2fb18",
+  "cdae9e51-65a1-4163-9e0f-26b9a1d3b71c",
+  "7c275e3b-32e9-41ea-9a31-386367c1ae4a",
+];
+
 type GithubRepo = {
   content: string;
   date: string;
@@ -49,6 +57,9 @@ export default function CandidatePage() {
   const [copied, setCopied] = useState(false);
   const [githubRepos, setGithubRepos] = useState<GithubRepo[]>([]);
   const [githubLoading, setGithubLoading] = useState(false);
+  const [question, setQuestion] = useState("");
+  const [chatAnswer, setChatAnswer] = useState("");
+  const [chatLoading, setChatLoading] = useState(false);
 
   useEffect(() => {
     if (!candidateId) return;
@@ -61,6 +72,27 @@ export default function CandidatePage() {
       .catch(() => {/* silently fall back to static data */})
       .finally(() => setGithubLoading(false));
   }, [candidateId]);
+
+  const isRealCandidate = REAL_CANDIDATE_IDS.includes(candidate.id);
+
+  const handleChat = async () => {
+    if (!question.trim() || !isRealCandidate) return;
+    setChatLoading(true);
+    setChatAnswer("");
+    try {
+      const res = await fetch(`${API}/candidates/${candidate.id}/chat`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: question }),
+      });
+      const data = await res.json();
+      setChatAnswer(data.answer ?? data.response ?? JSON.stringify(data));
+    } catch {
+      setChatAnswer("Sorry, something went wrong. Please try again.");
+    } finally {
+      setChatLoading(false);
+    }
+  };
 
   const draft = buildEmailDraft(candidate.name, role.title, candidate.currentTitle);
 
@@ -77,16 +109,16 @@ ${draft.body}`);
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-white via-orange-50 to-orange-200 p-6 md:p-8">
+    <main className="min-h-screen bg-orange-50 p-6 md:p-8">
       <div className="mx-auto max-w-5xl">
         <Link
           href="/"
-          className="mb-6 inline-block rounded-xl border border-orange-200 bg-white/60 px-4 py-2 text-sm font-medium text-orange-700 backdrop-blur-xl transition hover:bg-white/80"
+          className="mb-6 inline-block rounded-xl border border-orange-200 bg-white px-4 py-2 text-sm font-medium text-orange-700 transition hover:bg-orange-50"
         >
           ← Back to dashboard
         </Link>
 
-        <header className="rounded-3xl border border-orange-200 bg-white/50 p-6 shadow-lg backdrop-blur-xl">
+        <header className="rounded-3xl border border-orange-200 bg-white p-6 shadow-sm">
           <p className="text-xs uppercase tracking-[0.35em] text-orange-700">
             Candidate detail
           </p>
@@ -101,7 +133,7 @@ ${draft.body}`);
           </p>
 
           <div className="mt-6 flex flex-wrap gap-3">
-            <div className="rounded-3xl border border-orange-200 bg-white/70 px-5 py-4 shadow-sm">
+            <div className="rounded-3xl border border-orange-200 bg-gray-50 px-5 py-4 shadow-sm">
               <p className="text-xs uppercase tracking-[0.3em] text-orange-700">
                 Match score
               </p>
@@ -109,15 +141,15 @@ ${draft.body}`);
                 {candidate.matchScore}
               </p>
             </div>
-            <div className="rounded-3xl border border-orange-200 bg-white/70 px-5 py-4 shadow-sm">
+            <div className="rounded-3xl border border-orange-200 bg-gray-50 px-5 py-4 shadow-sm">
               <p className="text-xs uppercase tracking-[0.3em] text-orange-700">
                 Growth
               </p>
-              <p className="mt-2 text-4xl font-bold text-emerald-600">
+              <p className="mt-2 text-4xl font-bold text-orange-600">
                 +{candidate.growthPercent}%
               </p>
             </div>
-            <div className="rounded-3xl border border-orange-200 bg-white/70 px-5 py-4 shadow-sm">
+            <div className="rounded-3xl border border-orange-200 bg-gray-50 px-5 py-4 shadow-sm">
               <p className="text-xs uppercase tracking-[0.3em] text-orange-700">
                 Track
               </p>
@@ -133,7 +165,7 @@ ${draft.body}`);
                 href={candidate.linkedinUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-xl bg-blue-700 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-800"
+                className="rounded-xl bg-gray-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-black"
               >
                 LinkedIn ↗
               </a>
@@ -159,22 +191,41 @@ ${draft.body}`);
               </a>
             )}
             {candidate.githubUsername && (
-              <span className="rounded-xl border border-orange-200 bg-white/70 px-4 py-2 text-sm text-slate-700">
+              <span className="rounded-xl border border-orange-200 bg-gray-50 px-4 py-2 text-sm text-slate-700">
                 @{candidate.githubUsername}
               </span>
             )}
           </div>
 
-          <button
-            onClick={() => setEmailOpen(true)}
-            className="mt-6 inline-flex items-center rounded-xl bg-orange-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-700"
-          >
-            Email candidate
-          </button>
+          <div className="mt-5 flex flex-wrap items-center gap-3">
+            <button
+              onClick={() => setEmailOpen(true)}
+              className="inline-flex items-center rounded-xl bg-orange-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-700"
+            >
+              Email candidate
+            </button>
+            {candidate.resumeUrl && (
+              <a
+                href={candidate.resumeUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center rounded-xl border border-orange-200 bg-gray-50 px-4 py-2 text-sm font-medium text-orange-700 transition hover:bg-white"
+              >
+                View resume ↗
+              </a>
+            )}
+            <span className={`rounded-xl px-4 py-2 text-sm font-medium ${
+              candidate.willingToRelocate
+                ? "bg-orange-100 text-orange-700"
+                : "bg-gray-100 text-gray-600"
+            }`}>
+              Relocate: {candidate.willingToRelocate ? "Yes" : "No"}
+            </span>
+          </div>
         </header>
 
         <section className="mt-6 grid gap-6">
-          <div className="rounded-3xl border border-orange-200 bg-white/50 p-5 shadow-lg backdrop-blur-xl">
+          <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-2xl font-bold text-slate-950">LinkedIn</h2>
               {candidate.linkedinUrl && (
@@ -193,7 +244,7 @@ ${draft.body}`);
             </p>
           </div>
 
-          <div className="rounded-3xl border border-orange-200 bg-white/50 p-5 shadow-lg backdrop-blur-xl">
+          <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-2xl font-bold text-slate-950">GitHub</h2>
               {candidate.githubUrl && (
@@ -216,7 +267,7 @@ ${draft.body}`);
             {githubRepos.length > 0 && (
               <div className="mt-3 space-y-2">
                 {githubRepos.map((repo, i) => (
-                  <div key={i} className="rounded-2xl bg-white/70 px-4 py-3 text-sm text-slate-700">
+                  <div key={i} className="rounded-2xl bg-gray-50 px-4 py-3 text-sm text-slate-700">
                     {repo.content}
                   </div>
                 ))}
@@ -224,7 +275,7 @@ ${draft.body}`);
             )}
           </div>
 
-          <div className="rounded-3xl border border-orange-200 bg-white/50 p-5 shadow-lg backdrop-blur-xl">
+          <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between gap-4">
               <h2 className="text-2xl font-bold text-slate-950">Twitter / X</h2>
               {candidate.twitterUrl && (
@@ -243,14 +294,45 @@ ${draft.body}`);
             </p>
           </div>
 
+          {isRealCandidate && (
+            <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
+              <h2 className="text-2xl font-bold text-slate-950">Ask about this candidate</h2>
+              <p className="mt-1 text-xs text-slate-500">
+                Powered by Supermemory — queries real LinkedIn posts, GitHub activity, and tweets.
+              </p>
+              <div className="mt-4 flex gap-3">
+                <input
+                  type="text"
+                  value={question}
+                  onChange={(e) => setQuestion(e.target.value)}
+                  onKeyDown={(e) => e.key === "Enter" && handleChat()}
+                  placeholder="e.g. What projects has this candidate built?"
+                  className="flex-1 rounded-xl border border-orange-200 bg-white/80 px-4 py-2 text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-300"
+                />
+                <button
+                  onClick={handleChat}
+                  disabled={chatLoading || !question.trim()}
+                  className="rounded-xl bg-orange-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-orange-700 disabled:opacity-50"
+                >
+                  {chatLoading ? "Thinking…" : "Ask"}
+                </button>
+              </div>
+              {chatAnswer && (
+                <div className="mt-4 rounded-2xl bg-gray-50 px-4 py-3 text-sm leading-6 text-slate-700">
+                  {chatAnswer}
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="grid gap-6 md:grid-cols-2">
-            <div className="rounded-3xl border border-orange-200 bg-white/50 p-5 shadow-lg backdrop-blur-xl">
+            <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
               <h2 className="text-2xl font-bold text-slate-950">Skills learned</h2>
               <div className="mt-4 flex flex-wrap gap-2">
                 {candidate.skills.map((skill) => (
                   <span
                     key={skill}
-                    className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700"
+                    className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600"
                   >
                     {skill}
                   </span>
@@ -258,11 +340,11 @@ ${draft.body}`);
               </div>
             </div>
 
-            <div className="rounded-3xl border border-orange-200 bg-white/50 p-5 shadow-lg backdrop-blur-xl">
+            <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
               <h2 className="text-2xl font-bold text-slate-950">
                 Interview summary
               </h2>
-              <div className="mt-4 rounded-2xl bg-white/70 p-4">
+              <div className="mt-4 rounded-2xl bg-gray-50 p-4">
                 <p className="text-sm leading-6 text-slate-700">
                   <span className="font-semibold text-orange-700">Candidate said:</span>{" "}
                   {candidate.interviewSummary.candidateSaid}
@@ -275,7 +357,7 @@ ${draft.body}`);
             </div>
           </div>
 
-          <div className="rounded-3xl border border-orange-200 bg-white/50 p-5 shadow-lg backdrop-blur-xl">
+          <div className="rounded-3xl border border-orange-200 bg-white p-5 shadow-sm">
             <h2 className="text-2xl font-bold text-slate-950">Role match</h2>
             <p className="mt-2 text-sm text-slate-700">{candidate.summary}</p>
             <p className="mt-3 text-sm text-slate-600">
