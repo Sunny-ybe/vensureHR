@@ -35,7 +35,7 @@ I hope you have been doing well. We recently came across your profile again and 
 Based on your experience as a ${currentTitle}, we think you may be well aligned with the ${roleTitle} opportunity. If you are open to it, we would love to share more details and see whether this could be a good next step for you.
 
 Best,
-Venture HR Team`,
+VensureHR Team`,
   };
 }
 

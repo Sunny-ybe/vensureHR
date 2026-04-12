@@ -137,7 +137,7 @@ export default function Home() {
       <div className="mx-auto max-w-7xl">
         <header className="mb-8 rounded-3xl border border-orange-200 bg-white p-6 shadow-sm">
           <p className="text-xs uppercase tracking-[0.35em] text-orange-700">
-            Venture HR
+            VensureHR
           </p>
           <h1 className="mt-2 text-4xl font-bold text-slate-950 md:text-5xl">
             Talent intelligence for faster hiring
